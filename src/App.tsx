@@ -1,25 +1,47 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ItemsProvider } from "@/contexts/ItemsContext";
+import Navbar from "@/components/Navbar";
+import Dashboard from "@/pages/Dashboard";
+import ItemsList from "@/pages/ItemsList";
+import ItemDetail from "@/pages/ItemDetail";
+import ReportFound from "@/pages/ReportFound";
+import About from "@/pages/About";
+import Login from "@/pages/Login";
+import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <ItemsProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <div className="min-h-screen bg-background">
+              <Navbar />
+              <div className="pt-16"> {/* Add padding to account for fixed navbar */}
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/items" element={<ItemsList />} />
+                  <Route path="/items/:id" element={<ItemDetail />} />
+                  <Route path="/report" element={<ReportFound />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+            </div>
+          </BrowserRouter>
+        </ItemsProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
