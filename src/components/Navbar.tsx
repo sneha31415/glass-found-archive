@@ -38,7 +38,8 @@ const Navbar = () => {
   const navLinks = [
     { name: "Dashboard", path: "/" },
     { name: "Found Items", path: "/items" },
-    { name: "Report Found", path: "/report" },
+    { name: "Report Found", path: "/report-found" },
+    { name: "Report Lost", path: "/report-lost" },
     { name: "About", path: "/about" },
   ];
 
