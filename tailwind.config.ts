@@ -46,6 +46,10 @@ export default {
           foreground: "hsl(240 5% 64.9%)", // Light gray
         },
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        heading: ["Poppins", "sans-serif"],
+      },
       backgroundImage: {
         'gradient-primary': 'linear-gradient(135deg, hsla(252, 87%, 67%, 1) 0%, hsla(252, 87%, 57%, 1) 100%)',
         'gradient-secondary': 'linear-gradient(135deg, hsla(217, 33%, 17%, 1) 0%, hsla(217, 33%, 27%, 1) 100%)',
@@ -75,4 +79,3 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
