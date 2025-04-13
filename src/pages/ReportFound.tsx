@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useItems } from "@/contexts/ItemsContext";
@@ -10,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Question } from "@/types";
 import { X, Plus, AlertTriangle } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const ReportFound = () => {
   const { addItem } = useItems();

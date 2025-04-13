@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useItems } from "@/contexts/ItemsContext";
@@ -17,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ItemStatus } from "@/types";
+import { ItemStatus, UserRole } from "@/types";
 import { 
   Calendar, 
   MapPin, 
@@ -28,7 +27,7 @@ import {
   Tag,
   ClipboardList
 } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const ItemDetail = () => {
   const { id } = useParams<{ id: string }>();

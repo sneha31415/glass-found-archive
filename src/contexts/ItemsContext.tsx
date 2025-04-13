@@ -1,9 +1,8 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Item, ItemStatus, Question, ClaimAttempt } from "@/types";
 import { mockItems } from "@/data/mockData";
 import { useAuth } from "./AuthContext";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 interface ItemsContextType {
   items: Item[];
