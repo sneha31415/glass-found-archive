@@ -2,7 +2,9 @@
 export enum ItemStatus {
   FOUND = "found",
   CLAIMED = "claimed",
-  RETURNED = "returned"
+  RETURNED = "returned",
+  LOST = "lost",
+  MATCHED = "matched" // When a lost item is matched with a found item
 }
 
 export enum UserRole {
@@ -30,7 +32,8 @@ export interface Item {
   description: string;
   category: string;
   location: string;
-  dateFound: string;
+  dateFound?: string;
+  dateLost?: string;
   reportedBy: string;
   reporterName: string;
   reporterContact: string;
@@ -41,6 +44,7 @@ export interface Item {
   returnedDate?: string;
   createdAt: string;
   updatedAt: string;
+  isLostItem?: boolean; // Flag to distinguish lost items
 }
 
 export interface ClaimAttempt {

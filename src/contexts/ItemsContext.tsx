@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Item, ItemStatus, Question, ClaimAttempt } from "@/types";
 import { mockItems } from "@/data/mockData";
@@ -12,6 +13,10 @@ interface ItemsContextType {
   getItem: (id: string) => Item | undefined;
   claimItem: (itemId: string, answers: { questionId: string; answer: string }[]) => boolean;
   returnItem: (itemId: string) => void;
+  reportLostItem: (lostItem: Omit<Item, "id" | "createdAt" | "updatedAt" | "status" | "questions">) => void;
+  getLostItems: () => Item[];
+  getFoundItems: () => Item[];
+  checkForMatches: (newItem: Item) => Item[];
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
@@ -48,8 +53,16 @@ export const ItemsProvider = ({ children }: { children: React.ReactNode }) => {
       updatedAt: timestamp,
     };
 
-    setItems(prevItems => [...prevItems, item]);
-    toast.success("Item reported successfully");
+    const newItems = [...items, item];
+    setItems(newItems);
+    
+    // Check for potential matches with lost items
+    const matches = checkForMatches(item);
+    if (matches.length > 0) {
+      toast.success(`Found ${matches.length} potential matches with reported lost items!`);
+    } else {
+      toast.success("Item reported successfully");
+    }
   };
 
   const updateItem = (id: string, updatedFields: Partial<Item>) => {
@@ -134,6 +147,61 @@ export const ItemsProvider = ({ children }: { children: React.ReactNode }) => {
     toast.success("Item marked as returned");
   };
 
+  // Add functionality to report lost items
+  const reportLostItem = (lostItem: Omit<Item, "id" | "createdAt" | "updatedAt" | "status" | "questions">) => {
+    const timestamp = new Date().toISOString();
+    const item: Item = {
+      ...lostItem,
+      id: `lost${Date.now()}`,
+      status: ItemStatus.LOST,
+      questions: [], // Lost items don't have verification questions
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      isLostItem: true
+    };
+
+    const newItems = [...items, item];
+    setItems(newItems);
+    
+    // Check for potential matches with found items
+    const matches = checkForMatches(item);
+    if (matches.length > 0) {
+      toast.success(`Found ${matches.length} potential matches with reported found items!`);
+    } else {
+      toast.success("Lost item reported successfully");
+    }
+  };
+
+  // Get all lost items
+  const getLostItems = () => {
+    return items.filter(item => item.status === ItemStatus.LOST || item.isLostItem);
+  };
+
+  // Get all found items (not lost, not matched)
+  const getFoundItems = () => {
+    return items.filter(item => !item.isLostItem && item.status !== ItemStatus.MATCHED);
+  };
+
+  // Check for potential matches between lost and found items
+  const checkForMatches = (newItem: Item): Item[] => {
+    // If the new item is a lost item, check against found items
+    // If the new item is a found item, check against lost items
+    const itemsToCheckAgainst = newItem.isLostItem ? 
+      items.filter(item => !item.isLostItem && [ItemStatus.FOUND].includes(item.status)) :
+      items.filter(item => item.isLostItem);
+    
+    // Simple matching algorithm based on name and category
+    // Could be improved with more sophisticated matching
+    return itemsToCheckAgainst.filter(item => 
+      item.name.toLowerCase().includes(newItem.name.toLowerCase()) ||
+      newItem.name.toLowerCase().includes(item.name.toLowerCase()) ||
+      item.category.toLowerCase() === newItem.category.toLowerCase() ||
+      (item.description && newItem.description && 
+        (item.description.toLowerCase().includes(newItem.description.toLowerCase()) ||
+         newItem.description.toLowerCase().includes(item.description.toLowerCase())))
+    );
+  };
+
   return (
     <ItemsContext.Provider value={{ 
       items, 
@@ -142,7 +210,11 @@ export const ItemsProvider = ({ children }: { children: React.ReactNode }) => {
       deleteItem, 
       getItem, 
       claimItem,
-      returnItem
+      returnItem,
+      reportLostItem,
+      getLostItems,
+      getFoundItems,
+      checkForMatches
     }}>
       {children}
     </ItemsContext.Provider>

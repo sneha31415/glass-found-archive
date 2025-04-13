@@ -11,6 +11,7 @@ import Dashboard from "@/pages/Dashboard";
 import ItemsList from "@/pages/ItemsList";
 import ItemDetail from "@/pages/ItemDetail";
 import ReportFound from "@/pages/ReportFound";
+import ReportLost from "@/pages/ReportLost";
 import About from "@/pages/About";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
@@ -32,7 +33,8 @@ const App = () => (
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/items" element={<ItemsList />} />
                   <Route path="/items/:id" element={<ItemDetail />} />
-                  <Route path="/report" element={<ReportFound />} />
+                  <Route path="/report-found" element={<ReportFound />} />
+                  <Route path="/report-lost" element={<ReportLost />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="*" element={<NotFound />} />
