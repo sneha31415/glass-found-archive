@@ -9,32 +9,23 @@
   :root {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
-
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 252 87% 67%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 217 33% 17%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-
     --accent: 194 85% 55%;
     --accent-foreground: 0 0% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-
     --radius: 0.5rem;
   }
 }
@@ -48,7 +39,8 @@
     @apply bg-background text-foreground antialiased;
     background-image: 
       radial-gradient(circle at 400px 400px, rgba(45, 51, 75, 0.5) 0%, transparent 800px),
-      radial-gradient(circle at 70% 20%, rgba(66, 55, 90, 0.3) 0%, transparent 60%);
+      radial-gradient(circle at 70% 20%, rgba(66, 55, 90, 0.3) 0%, transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 40%);
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
   }
 
@@ -58,6 +50,7 @@
 }
 
 @layer utilities {
+  /* Glass effect utilities */
   .glass {
     @apply backdrop-blur-md bg-white/5 border border-white/10 shadow-[0_4px_15px_rgba(0,0,0,0.3)];
   }
@@ -66,7 +59,54 @@
     @apply bg-white/5 border border-white/10 focus:border-primary/50 focus:bg-white/10;
   }
   
+  /* Text effects */
   .text-glow {
-    text-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+    text-shadow: 0 0 15px rgba(155, 135, 245, 0.7);
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-white via-primary/90 to-accent/80 bg-clip-text text-transparent;
+  }
+
+  /* Background gradient utilities */
+  .bg-gradient-primary {
+    @apply bg-gradient-primary;
+  }
+
+  .bg-gradient-secondary {
+    @apply bg-gradient-secondary;
+  }
+
+  .bg-gradient-accent {
+    @apply bg-gradient-accent;
+  }
+
+  .bg-gradient-background {
+    @apply bg-gradient-background;
+  }
+  
+  /* Card gradients */
+  .card-gradient-purple {
+    background: linear-gradient(135deg, rgba(155, 135, 245, 0.1) 0%, rgba(126, 105, 171, 0.05) 100%);
+    @apply hover:bg-opacity-20 transition-all duration-300;
+  }
+  
+  .card-gradient-blue {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(30, 174, 219, 0.05) 100%);
+    @apply hover:bg-opacity-20 transition-all duration-300;
+  }
+  
+  .card-gradient-pink {
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+    @apply hover:bg-opacity-20 transition-all duration-300;
+  }
+  
+  /* Button gradients */
+  .btn-gradient-primary {
+    @apply bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300;
+  }
+  
+  .btn-gradient-accent {
+    @apply bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 transition-all duration-300;
   }
 }
