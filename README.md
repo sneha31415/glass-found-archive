@@ -1,73 +1,113 @@
-# Welcome to your Lovable project
+# Glass Found Archive
 
-## Project info
+A modern lost and found system for educational institutions.
 
-**URL**: https://lovable.dev/projects/fb054ffb-bb7a-4136-bba2-85c4664b2d9e
+## Features
 
-## How can I edit this code?
+- **User Authentication**
+  - Secure login and registration
+  - Role-based access control (Admin/User)
+  - JWT-based authentication
 
-There are several ways of editing your application.
+- **Item Management**
+  - Report found items with detailed information
+  - Report lost items
+  - Upload item images
+  - Add verification questions for claiming
+  - Categorize items for easy searching
 
-**Use Lovable**
+- **Privacy & Security**
+  - Contact details are only visible after a claim is accepted
+  - Verification questions to prevent false claims
+  - Secure data handling and storage
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fb054ffb-bb7a-4136-bba2-85c4664b2d9e) and start prompting.
+- **Item Status Tracking**
+  - Found: Item is available for claiming
+  - Claimed: Item has been claimed and awaiting verification
+  - Returned: Item has been successfully returned to owner
+  - Lost: Item has been reported as lost
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Search & Filter**
+  - Search items by name, description, category, or location
+  - Filter items by status and category
+  - View recently reported items
 
-**Use your preferred IDE**
+- **Dashboard**
+  - Overview of system statistics
+  - Visual representation of item statuses
+  - Category-wise distribution of items
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
 
-Follow these steps:
+- Node.js (v14 or higher)
+- MongoDB
+- npm or yarn
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Installation
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/glass-found-archive.git
+cd glass-found-archive
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. Install dependencies
+```bash
+# Install server dependencies
+cd server
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Install client dependencies
+cd ../client
+npm install
+```
+
+3. Set up environment variables
+```bash
+# Server (.env)
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+PORT=5000
+
+# Client (.env)
+VITE_API_URL=http://localhost:5000
+```
+
+4. Start the development servers
+```bash
+# Start server
+cd server
+npm run dev
+
+# Start client
+cd ../client
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Security Features
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **Contact Privacy**: Contact information of item reporters is only revealed after a claim has been accepted
+- **Verification Questions**: Custom questions to verify rightful ownership
+- **Secure Authentication**: JWT-based authentication with role-based access
+- **Data Protection**: Secure handling of sensitive user information
 
-**Use GitHub Codespaces**
+## Contributing
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## What technologies are used for this project?
+## License
 
-This project is built with:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Acknowledgments
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/fb054ffb-bb7a-4136-bba2-85c4664b2d9e) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- [React](https://reactjs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
