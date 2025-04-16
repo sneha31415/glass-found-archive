@@ -31,7 +31,7 @@ import { toast } from "sonner";
 
 const ItemDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { getItem, claimItem, returnItem } = useItems();
+  const { getItem, submitClaim, returnItem } = useItems();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [answers, setAnswers] = useState<{ questionId: string; answer: string }[]>([]);
@@ -84,10 +84,8 @@ const ItemDetail = () => {
       return;
     }
     
-    const success = claimItem(item.id, answers);
-    if (success) {
-      setIsDialogOpen(false);
-    }
+    submitClaim(item.id, answers);
+    setIsDialogOpen(false);
   };
 
   const handleReturnItem = () => {
@@ -253,7 +251,7 @@ const ItemDetail = () => {
       </div>
 
       {/* Questions Section (Admin or reporter only) */}
-      {(user?.id === item.reportedBy || user?.role === UserRole.ADMIN) && (
+      {(user?.id === item.reportedBy || user?.role === 'admin') && (
         <div className="glass rounded-lg p-6 mt-8">
           <div className="flex items-center gap-2 mb-4">
             <ClipboardList className="h-5 w-5" />

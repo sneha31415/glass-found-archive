@@ -1,4 +1,3 @@
-
 export enum ItemStatus {
   FOUND = "found",
   CLAIMED = "claimed",
@@ -47,12 +46,20 @@ export interface Item {
   isLostItem?: boolean; // Flag to distinguish lost items
 }
 
+export enum ClaimStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected'
+}
+
 export interface ClaimAttempt {
   id: string;
   itemId: string;
   userId: string;
   userName: string;
   answers: { questionId: string; answer: string }[];
-  isSuccessful: boolean;
+  status: ClaimStatus;
   createdAt: string;
+  updatedAt: string;
+  reporterResponse?: string;
 }

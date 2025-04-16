@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Item, ItemStatus, Question, ClaimAttempt } from "@/types";
+import { Item, ItemStatus, Question, ClaimAttempt, ClaimStatus } from "@/types";
 import { mockItems } from "@/data/mockData";
 import { useAuth } from "./AuthContext";
 import { toast } from "sonner";
@@ -11,37 +10,49 @@ interface ItemsContextType {
   updateItem: (id: string, item: Partial<Item>) => void;
   deleteItem: (id: string) => void;
   getItem: (id: string) => Item | undefined;
-  claimItem: (itemId: string, answers: { questionId: string; answer: string }[]) => boolean;
+  submitClaim: (itemId: string, answers: { questionId: string; answer: string }[]) => void;
+  reviewClaim: (itemId: string, claimId: string, status: ClaimStatus, response?: string) => void;
   returnItem: (itemId: string) => void;
   reportLostItem: (lostItem: Omit<Item, "id" | "createdAt" | "updatedAt" | "status" | "questions">) => void;
   getLostItems: () => Item[];
   getFoundItems: () => Item[];
   checkForMatches: (newItem: Item) => Item[];
+  getClaimAttempts: (itemId: string) => ClaimAttempt[];
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined);
 
 export const ItemsProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<Item[]>([]);
+  const [claimAttempts, setClaimAttempts] = useState<ClaimAttempt[]>([]);
   const { user } = useAuth();
 
   useEffect(() => {
-    // Load items from localStorage or use mock data
+    // Load items and claim attempts from localStorage
     const savedItems = localStorage.getItem("items");
+    const savedClaims = localStorage.getItem("claimAttempts");
+    
     if (savedItems) {
       setItems(JSON.parse(savedItems));
     } else {
       setItems(mockItems);
       localStorage.setItem("items", JSON.stringify(mockItems));
     }
+    
+    if (savedClaims) {
+      setClaimAttempts(JSON.parse(savedClaims));
+    }
   }, []);
 
-  // Save items to localStorage whenever they change
+  // Save items and claim attempts to localStorage whenever they change
   useEffect(() => {
     if (items.length > 0) {
       localStorage.setItem("items", JSON.stringify(items));
     }
-  }, [items]);
+    if (claimAttempts.length > 0) {
+      localStorage.setItem("claimAttempts", JSON.stringify(claimAttempts));
+    }
+  }, [items, claimAttempts]);
 
   const addItem = (newItem: Omit<Item, "id" | "createdAt" | "updatedAt" | "status">) => {
     const timestamp = new Date().toISOString();
@@ -85,41 +96,84 @@ export const ItemsProvider = ({ children }: { children: React.ReactNode }) => {
     return items.find(item => item.id === id);
   };
 
-  const claimItem = (itemId: string, answers: { questionId: string; answer: string }[]): boolean => {
+  const submitClaim = (itemId: string, answers: { questionId: string; answer: string }[]) => {
     if (!user) {
       toast.error("You must be logged in to claim an item");
-      return false;
+      return;
     }
 
     const item = getItem(itemId);
     if (!item) {
       toast.error("Item not found");
-      return false;
+      return;
     }
 
     if (item.status !== ItemStatus.FOUND) {
       toast.error("This item is not available for claiming");
-      return false;
+      return;
     }
 
-    // Check if all questions are answered correctly
-    const allCorrect = item.questions.every(question => {
-      const userAnswer = answers.find(a => a.questionId === question.id)?.answer;
-      return userAnswer && userAnswer.toLowerCase() === question.answer.toLowerCase();
-    });
+    const timestamp = new Date().toISOString();
+    const claimAttempt: ClaimAttempt = {
+      id: `claim${Date.now()}`,
+      itemId,
+      userId: user.id,
+      userName: user.name,
+      answers,
+      status: ClaimStatus.PENDING,
+      createdAt: timestamp,
+      updatedAt: timestamp
+    };
 
-    if (allCorrect) {
+    setClaimAttempts(prev => [...prev, claimAttempt]);
+    toast.success("Claim submitted successfully! The reporter will review your answers.");
+  };
+
+  const reviewClaim = (itemId: string, claimId: string, status: ClaimStatus, response?: string) => {
+    if (!user) {
+      toast.error("You must be logged in to review claims");
+      return;
+    }
+
+    const item = getItem(itemId);
+    if (!item) {
+      toast.error("Item not found");
+      return;
+    }
+
+    if (item.reportedBy !== user.id && user.role !== 'admin') {
+      toast.error("You are not authorized to review this claim");
+      return;
+    }
+
+    const claim = claimAttempts.find(c => c.id === claimId);
+    if (!claim) {
+      toast.error("Claim not found");
+      return;
+    }
+
+    const timestamp = new Date().toISOString();
+    setClaimAttempts(prev => 
+      prev.map(c => 
+        c.id === claimId 
+          ? { ...c, status, reporterResponse: response, updatedAt: timestamp }
+          : c
+      )
+    );
+
+    if (status === ClaimStatus.APPROVED) {
       updateItem(itemId, { 
         status: ItemStatus.CLAIMED, 
-        claimedBy: user.id 
+        claimedBy: claim.userId 
       });
-      
-      toast.success("Item claimed successfully! Please collect it from the lost and found office.");
-      return true;
+      toast.success("Claim approved! The claimant has been notified.");
     } else {
-      toast.error("Incorrect answers. Please try again.");
-      return false;
+      toast.success("Claim rejected");
     }
+  };
+
+  const getClaimAttempts = (itemId: string) => {
+    return claimAttempts.filter(claim => claim.itemId === itemId);
   };
 
   const returnItem = (itemId: string) => {
@@ -208,13 +262,15 @@ export const ItemsProvider = ({ children }: { children: React.ReactNode }) => {
       addItem, 
       updateItem, 
       deleteItem, 
-      getItem, 
-      claimItem,
+      getItem,
+      submitClaim,
+      reviewClaim,
       returnItem,
       reportLostItem,
       getLostItems,
       getFoundItems,
-      checkForMatches
+      checkForMatches,
+      getClaimAttempts
     }}>
       {children}
     </ItemsContext.Provider>

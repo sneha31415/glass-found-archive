@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -42,6 +41,11 @@ const Navbar = () => {
     { name: "Report Lost", path: "/report-lost" },
     { name: "About", path: "/about" },
   ];
+
+  // Add Review Claims link for reporters
+  if (user) {
+    navLinks.push({ name: "Review Claims", path: "/review-claims" });
+  }
 
   return (
     <nav className="glass fixed top-0 left-0 right-0 z-50 px-4 py-3">
@@ -100,7 +104,6 @@ const Navbar = () => {
                 <DropdownMenuItem asChild>
                   <Link to="/my-claims">My Claims</Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout}>
                   Log out
                 </DropdownMenuItem>
