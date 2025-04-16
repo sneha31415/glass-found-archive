@@ -7,22 +7,35 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-const Login = () => {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+
     try {
       setIsLoading(true);
-      await login(email, password);
-      toast.success("Login successful!");
+      await register(email, password, name);
+      toast.success("Registration successful!");
       navigate("/");
     } catch (error) {
-      toast.error("Login failed. Please check your credentials.");
+      toast.error("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -31,9 +44,21 @@ const Login = () => {
   return (
     <div className="container max-w-md py-20">
       <div className="glass rounded-lg p-8">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Create an Account</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Enter your full name"
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -58,6 +83,18 @@ const Login = () => {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              placeholder="Confirm your password"
+            />
+          </div>
+
           <Button 
             type="submit" 
             className="w-full" 
@@ -66,21 +103,21 @@ const Login = () => {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Logging in...
+                Registering...
               </>
             ) : (
-              "Login"
+              "Register"
             )}
           </Button>
         </form>
 
         <div className="mt-4 text-center text-sm">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/login")}
             className="text-primary hover:underline"
           >
-            Register here
+            Login here
           </button>
         </div>
       </div>
@@ -88,4 +125,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register; 
