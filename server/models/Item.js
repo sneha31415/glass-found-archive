@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
     required: true
   },
@@ -17,28 +17,50 @@ const itemSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  date: {
-    type: Date,
-    required: true
+  dateFound: {
+    type: Date
+  },
+  dateLost: {
+    type: Date
   },
   status: {
     type: String,
-    enum: ['lost', 'found', 'claimed'],
-    default: 'lost'
+    enum: ['lost', 'found', 'claimed', 'returned', 'matched'],
+    default: 'found'
   },
-  image: {
+  imageUrl: {
     type: String
   },
-  postedBy: {
+  reportedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true
+  },
+  reporterName: {
+    type: String,
+    required: true
+  },
+  reporterContact: {
+    type: String,
     required: true
   },
   claimedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  returnedDate: {
+    type: Date
+  },
+  questions: [{
+    id: String,
+    question: String,
+    answer: String
+  }],
   createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
     type: Date,
     default: Date.now
   }

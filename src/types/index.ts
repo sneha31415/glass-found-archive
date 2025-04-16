@@ -27,6 +27,7 @@ export interface Question {
 
 export interface Item {
   id: string;
+  _id?: string; // MongoDB's default ID field
   name: string;
   description: string;
   category: string;

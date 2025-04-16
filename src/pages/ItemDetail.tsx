@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useItems } from "@/contexts/ItemsContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,8 +34,15 @@ const ItemDetail = () => {
   const { getItem, submitClaim, returnItem } = useItems();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [answers, setAnswers] = useState<{ questionId: string; answer: string }[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [answers, setAnswers] = useState<{ questionId: string; answer: string }[]>([]);
+
+  // Reset answers when dialog closes
+  useEffect(() => {
+    if (!isDialogOpen) {
+      setAnswers([]);
+    }
+  }, [isDialogOpen]);
 
   if (!id) {
     navigate("/items");
@@ -168,22 +175,23 @@ const ItemDetail = () => {
               </div>
             </div>
 
-            <div className="flex items-center">
-              <Mail className="h-5 w-5 mr-2 text-muted-foreground" />
-              <div>
-                <p className="text-sm text-muted-foreground">Contact</p>
-                <p>{item.reporterContact}</p>
-              </div>
-            </div>
-
             {item.status === ItemStatus.CLAIMED && (
-              <div className="flex items-center">
-                <User className="h-5 w-5 mr-2 text-muted-foreground" />
-                <div>
-                  <p className="text-sm text-muted-foreground">Claimed By</p>
-                  <p>{user?.id === item.claimedBy ? "You" : "Another User"}</p>
+              <>
+                <div className="flex items-center">
+                  <User className="h-5 w-5 mr-2 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Claimed By</p>
+                    <p>{user?.id === item.claimedBy ? "You" : "Another User"}</p>
+                  </div>
                 </div>
-              </div>
+                <div className="flex items-center">
+                  <Mail className="h-5 w-5 mr-2 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Contact</p>
+                    <p>{item.reporterContact}</p>
+                  </div>
+                </div>
+              </>
             )}
 
             {item.status === ItemStatus.RETURNED && item.returnedDate && (

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useItems } from "@/contexts/ItemsContext";
@@ -52,7 +51,7 @@ const Dashboard = () => {
             Browse Items
           </Button>
           <Button 
-            onClick={() => navigate("/report")}
+            onClick={() => navigate("/report-found")}
             variant="secondary"
             className="gap-2"
           >
